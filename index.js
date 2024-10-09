@@ -1,4 +1,5 @@
-// import path from 'path';
+import path from 'path';
+import fs from 'node:fs';
 // import { fileURLToPath } from 'url';
 import os from 'os';
 // const __filename = fileURLToPath(import.meta.url);
@@ -36,11 +37,23 @@ process.stdin.resume();
 promptUser();
 process.stdin.setEncoding('utf8');
 
+const upDirectory = () => {
+    const targetPath = path.resolve(process.cwd(), '..');
+    if (fs.existsSync(targetPath) && fs.lstatSync(targetPath).isDirectory()) {
+        process.chdir(targetPath);
+        console.log(`Current directory: ${process.cwd()}`);
+    } else {
+        console.error('Error: Path does not exist');
+    }
+}
+
 process.stdin.on('data', (data) => {
     const input = data.trim();
     if (input === '.exit') {
         console.log(`Thank you for using File Manager, ${username}, goodbye!`);
         process.exit(0);
+    } else if ('up') {
+        upDirectory();
     } else {
         console.log(`You entered: ${input}`);
     }
