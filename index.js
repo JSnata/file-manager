@@ -3,6 +3,9 @@
 import os from 'os';
 import welcome from './welcome.js';
 import { changeDirectory, listFilesFolders } from './navigation.js';
+import read from './fs/read.js';
+import create from './fs/create.js';
+import rename from './fs/rename.js';
 // const __filename = fileURLToPath(import.meta.url);
 // const __dirname = path.dirname(__filename);
 let username;
@@ -30,6 +33,18 @@ process.stdin.on('data', (data) => {
         changeDirectory(input.slice(3).trim());
     } else if (input === 'ls') {
         listFilesFolders().then(() => promptUser());
+    } else if (input.startsWith('cat ')) {
+        read(input.slice(4).trim()).then(() => promptUser());
+    } else if (input.startsWith('add ')) {
+        create(process.cwd(), input.slice(4).trim()).then(() => promptUser());
+    } else if (input.startsWith('rn ')){
+        // rn /Users/natasakrucenok/desktop/new.txt new2.txt
+        const [oldFilename, newFilename] = input.slice(3).trim().split(' ');
+        rename(oldFilename, newFilename).then(() => promptUser());
+    }
+    else {
+        console.log('Wrong command. Please try again.');
+        promptUser();
     }
 });
 
