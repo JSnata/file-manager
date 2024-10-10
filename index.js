@@ -37,25 +37,25 @@ process.stdin.resume();
 promptUser();
 process.stdin.setEncoding('utf8');
 
-const upDirectory = () => {
-    const targetPath = path.resolve(process.cwd(), '..');
+const changeDirectory = (toPath) => {
+    const targetPath = path.isAbsolute(toPath) ? toPath : path.resolve(process.cwd(), toPath);
     if (fs.existsSync(targetPath) && fs.lstatSync(targetPath).isDirectory()) {
         process.chdir(targetPath);
-        console.log(`Current directory: ${process.cwd()}`);
+        console.log(`You are currently in ${process.cwd()}`);
     } else {
         console.error('Error: Path does not exist');
     }
-}
+};
 
 process.stdin.on('data', (data) => {
     const input = data.trim();
     if (input === '.exit') {
         console.log(`Thank you for using File Manager, ${username}, goodbye!`);
         process.exit(0);
-    } else if ('up') {
-        upDirectory();
-    } else {
-        console.log(`You entered: ${input}`);
+    } else if (input === 'up') {
+        changeDirectory('..');
+    } else if (input.startsWith('cd ')){
+        changeDirectory(input.slice(3).trim());
     }
     promptUser();
 });
