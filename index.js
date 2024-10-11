@@ -7,6 +7,7 @@ import read from './fs/read.js';
 import create from './fs/create.js';
 import rename from './fs/rename.js';
 import copy from './fs/copy.js';
+import remove from './fs/remove.js';
 // const __filename = fileURLToPath(import.meta.url);
 // const __dirname = path.dirname(__filename);
 const username = welcome();
@@ -45,6 +46,8 @@ process.stdin.on('data', (data) => {
     } else if (input.startsWith('cp ')) {
         const [source, destination] = input.slice(3).trim().split(' ');
         copy(source, destination).then(() => promptUser());
+    } else if (input.startsWith('rm ')){
+        remove(input.slice(3).trim()).then(() => promptUser());
     }
     else {
         console.log('Wrong command. Please try again.');
