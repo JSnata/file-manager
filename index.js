@@ -6,11 +6,11 @@ import { changeDirectory, listFilesFolders } from './navigation.js';
 import read from './fs/read.js';
 import create from './fs/create.js';
 import rename from './fs/rename.js';
+import copy from './fs/copy.js';
 // const __filename = fileURLToPath(import.meta.url);
 // const __dirname = path.dirname(__filename);
-let username;
+const username = welcome();
 
-welcome();
 process.chdir(os.homedir());
 console.log(`You are currently in ${process.cwd()}`);
 const promptUser = () => {
@@ -29,8 +29,10 @@ process.stdin.on('data', (data) => {
         process.exit(0);
     } else if (input === 'up') {
         changeDirectory('..');
+        promptUser();
     } else if (input.startsWith('cd ')) {
         changeDirectory(input.slice(3).trim());
+        promptUser();
     } else if (input === 'ls') {
         listFilesFolders().then(() => promptUser());
     } else if (input.startsWith('cat ')) {
@@ -38,9 +40,11 @@ process.stdin.on('data', (data) => {
     } else if (input.startsWith('add ')) {
         create(process.cwd(), input.slice(4).trim()).then(() => promptUser());
     } else if (input.startsWith('rn ')){
-        // rn /Users/natasakrucenok/desktop/new.txt new2.txt
         const [oldFilename, newFilename] = input.slice(3).trim().split(' ');
         rename(oldFilename, newFilename).then(() => promptUser());
+    } else if (input.startsWith('cp ')) {
+        const [source, destination] = input.slice(3).trim().split(' ');
+        copy(source, destination).then(() => promptUser());
     }
     else {
         console.log('Wrong command. Please try again.');
