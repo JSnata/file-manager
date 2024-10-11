@@ -1,6 +1,5 @@
 import copy from './copy.js';
 import { unlink } from 'node:fs/promises';
-import remove from './remove.js';
 
 const move = async (source, destination) => {
     try {

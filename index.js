@@ -1,5 +1,3 @@
-// import { fileURLToPath } from 'url';
-// import path from 'path';
 import os from 'os';
 import welcome from './welcome.js';
 import { changeDirectory, listFilesFolders } from './navigation.js';
@@ -9,8 +7,9 @@ import rename from './fs/rename.js';
 import copy from './fs/copy.js';
 import remove from './fs/remove.js';
 import move from './fs/move.js';
-// const __filename = fileURLToPath(import.meta.url);
-// const __dirname = path.dirname(__filename);
+import getEOL from './os/getEOL.js';
+import printCPUsInfo from './os/printCPUsInfo.js';
+
 const username = welcome();
 
 process.chdir(os.homedir());
@@ -51,8 +50,20 @@ process.stdin.on('data', (data) => {
         remove(input.slice(3).trim()).then(() => promptUser());
     } else if (input.startsWith('mv ')){
         const [source, destination] = input.slice(3).trim().split(' ');
-        //mv desktop/fileToRemove.txt checks/
         move(source, destination).then(() => promptUser())
+    } else if (input.startsWith('os ')) {
+        const flag = input.slice(3).trim();
+        if(flag === '--EOL') {
+            getEOL();
+        } else if (flag === '--cpus') {
+            printCPUsInfo();
+        } else if (flag === '--homedir') {
+            console.log(`Home directory: ${os.homedir()}`);
+        } else if (flag === '--username') {
+            console.log(`Username: ${os.userInfo().username}`);
+        } else if (flag === '--architecture') {
+            console.log(`CPU architecture: ${os.arch()}`);
+        }
     }
     else {
         console.log('Wrong command. Please try again.');
