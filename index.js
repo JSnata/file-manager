@@ -9,6 +9,7 @@ import remove from './fs/remove.js';
 import move from './fs/move.js';
 import getEOL from './os/getEOL.js';
 import printCPUsInfo from './os/printCPUsInfo.js';
+import calcHash from './hash/calcHash.js';
 
 const username = welcome();
 
@@ -64,6 +65,8 @@ process.stdin.on('data', (data) => {
         } else if (flag === '--architecture') {
             console.log(`CPU architecture: ${os.arch()}`);
         }
+    } else if (input.startsWith('hash ')) {
+        calcHash(input.slice(4).trim()).then(() => promptUser());
     }
     else {
         console.log('Wrong command. Please try again.');
