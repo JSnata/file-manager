@@ -8,6 +8,7 @@ import create from './fs/create.js';
 import rename from './fs/rename.js';
 import copy from './fs/copy.js';
 import remove from './fs/remove.js';
+import move from './fs/move.js';
 // const __filename = fileURLToPath(import.meta.url);
 // const __dirname = path.dirname(__filename);
 const username = welcome();
@@ -48,6 +49,10 @@ process.stdin.on('data', (data) => {
         copy(source, destination).then(() => promptUser());
     } else if (input.startsWith('rm ')){
         remove(input.slice(3).trim()).then(() => promptUser());
+    } else if (input.startsWith('mv ')){
+        const [source, destination] = input.slice(3).trim().split(' ');
+        //mv desktop/fileToRemove.txt checks/
+        move(source, destination).then(() => promptUser())
     }
     else {
         console.log('Wrong command. Please try again.');
