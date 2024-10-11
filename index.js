@@ -10,6 +10,8 @@ import move from './fs/move.js';
 import getEOL from './os/getEOL.js';
 import printCPUsInfo from './os/printCPUsInfo.js';
 import calcHash from './hash/calcHash.js';
+import compress from './zip/compress.js';
+import decompress from './zip/decompress.js';
 
 const username = welcome();
 
@@ -67,8 +69,13 @@ process.stdin.on('data', (data) => {
         }
     } else if (input.startsWith('hash ')) {
         calcHash(input.slice(4).trim()).then(() => promptUser());
-    }
-    else {
+    } else if (input.startsWith('compress ')) {
+        const [source, destination] = input.slice(9).trim().split(' ');
+        compress(source, destination).then(() => promptUser());
+    } else if (input.startsWith('decompress ')) {
+        const [source, destination] = input.slice(11).trim().split(' ');
+        decompress(source, destination).then(() => promptUser());
+    } else {
         console.log('Wrong command. Please try again.');
         promptUser();
     }
