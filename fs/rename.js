@@ -1,6 +1,7 @@
 import { access, rename as renameFunc } from 'node:fs/promises';
 import { constants } from 'node:fs';
 import path from 'path';
+import { promptUser } from '../index.js';
 
 const rename = async (wrongFilenamePath, newFilename) => {
     try {
@@ -22,10 +23,12 @@ const rename = async (wrongFilenamePath, newFilename) => {
             await renameFunc(wrongFilePath, newFilePath);
             console.log(`File renamed from ${wrongFilenamePath} to ${newFilename}`);
         } catch (error) {
-            console.error('file to rename does not exist');
+            console.error('Operation failed. File to rename does not exist');
         }
     } catch (error) {
-        console.error('FS operation failed:', error.message);
+        console.error(`Operation failed. ${error.message}`);
+    } finally {
+        promptUser();
     }
 };
 

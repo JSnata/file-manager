@@ -18,7 +18,7 @@ const username = welcome();
 const currentDirectory = () => {
     console.log(`You are currently in ${process.cwd()}`);
 }
-const promptUser = () => {
+export const promptUser = () => {
     currentDirectory();
     process.stdout.write('> '); 
 };
@@ -36,19 +36,18 @@ process.stdin.on('data', (data) => {
         console.log(`Thank you for using File Manager, ${username}, goodbye!`);
         process.exit(0);
     } else if (input === 'up') {
-        changeDirectory('..');
-        promptUser();
+        changeDirectory('../');
     } else if (input.startsWith('cd ')) {
-        changeDirectory(input.slice(3).trim()).finally(() => promptUser());
+        changeDirectory(input.slice(3).trim());
     } else if (input === 'ls') {
         listFilesFolders().finally(() => promptUser());
     } else if (input.startsWith('cat ')) {
         read(input.slice(4).trim()).finally(() => promptUser());
     } else if (input.startsWith('add ')) {
-        create(process.cwd(), input.slice(4).trim()).finally(() => promptUser());
+        create(process.cwd(), input.slice(4).trim());
     } else if (input.startsWith('rn ')){
         const [oldFilename, newFilename] = input.slice(3).trim().split(' ');
-        rename(oldFilename, newFilename).finally(() => promptUser());
+        rename(oldFilename, newFilename);
     } else if (input.startsWith('cp ')) {
         const [source, destination] = input.slice(3).trim().split(' ');
         copy(source, destination).finally(() => promptUser());
@@ -76,7 +75,8 @@ process.stdin.on('data', (data) => {
                 console.log(`CPU architecture: ${os.arch()}`);
                 break;
             default:
-                console.log('Invalid input');
+                console.error('Invalid input');
+                promptUser();
         }
     promptUser();
     } else if (input.startsWith('hash ')) {
@@ -88,7 +88,7 @@ process.stdin.on('data', (data) => {
         const [source, destination] = input.slice(11).trim().split(' ');
         decompress(source, destination).then(() => promptUser());
     } else {
-        console.log('Invalid input.');
+        console.error('Invalid input.');
         promptUser();
     }
 });

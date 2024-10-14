@@ -1,5 +1,6 @@
-import { access, lstat } from 'fs/promises';
+import { access, lstat, readdir, stat } from 'fs/promises';
 import { constants } from 'fs';
+import { promptUser } from './index.js';
 import path from 'path';
 
 export const changeDirectory = async (toPath ) => {
@@ -25,24 +26,38 @@ export const changeDirectory = async (toPath ) => {
     } catch (err) {
         console.error(`Operation failed. ${err.message}`);
         process.chdir(originalPath);
+    } finally {
+        promptUser();
     }
 }
-
 
 
 export const listFilesFolders = async () => {
     try {
         const items = await readdir(process.cwd());
-        const resultsTable = [];
+        const directories = [];
+        const files = [];
 
         for (const item of items) {
             const itemPath = path.join(process.cwd(), item);
             const stats = await stat(itemPath);
-            resultsTable.push({ Name: item, Type: stats.isDirectory() ? 'directory' : 'file' });
+
+            if (stats.isDirectory()) {
+                directories.push({ Name: item, Type: 'directory' });
+            } else {
+                files.push({ Name: item, Type: 'file' });
+            }
         }
+
+        directories.sort((a, b) => a.Name.localeCompare(b.Name));
+        files.sort((a, b) => a.Name.localeCompare(b.Name));
+
+        const resultsTable = [...directories, ...files];
 
         console.table(resultsTable);
     } catch (err) {
-        console.error('Error reading the directory:', err);
+        console.error(`Operation failed. ${err.message}`);
+    } finally {
+        promptUser();
     }
 };

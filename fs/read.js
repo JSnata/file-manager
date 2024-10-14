@@ -1,5 +1,6 @@
 import { createReadStream } from 'node:fs';
 import path from 'node:path';
+import { promptUser } from '../index.js';
 
 const read = async (filePath) => {
     const resolvedPath = path.resolve(process.cwd(), filePath);
@@ -12,10 +13,12 @@ const read = async (filePath) => {
 
     fileStream.on('end', () => {
         console.log('\nFile reading finished.');
+        promptUser();
     });
 
     fileStream.on('error', (err) => {
-        console.error(err);
+        console.error(`Operation failed. ${err.message}`);
+        promptUser();
     });
 };
 
