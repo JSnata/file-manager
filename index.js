@@ -50,12 +50,12 @@ process.stdin.on('data', (data) => {
         rename(oldFilename, newFilename);
     } else if (input.startsWith('cp ')) {
         const [source, destination] = input.slice(3).trim().split(' ');
-        copy(source, destination).finally(() => promptUser());
+        copy(source, destination);
     } else if (input.startsWith('rm ')){
         remove(input.slice(3).trim()).finally(() => promptUser());
     } else if (input.startsWith('mv ')){
         const [source, destination] = input.slice(3).trim().split(' ');
-        move(source, destination).finally(() => promptUser())
+        move(source, destination)
     } else if (input.startsWith('os ')) {
         const flag = input.slice(3).trim();
         switch (flag) {
@@ -80,13 +80,13 @@ process.stdin.on('data', (data) => {
         }
     promptUser();
     } else if (input.startsWith('hash ')) {
-        calcHash(input.slice(4).trim()).then(() => promptUser());
+        calcHash(input.slice(4).trim());
     } else if (input.startsWith('compress ')) {
         const [source, destination] = input.slice(9).trim().split(' ');
-        compress(source, destination).then(() => promptUser());
+        compress(source, destination);
     } else if (input.startsWith('decompress ')) {
         const [source, destination] = input.slice(11).trim().split(' ');
-        decompress(source, destination).then(() => promptUser());
+        decompress(source, destination);
     } else {
         console.error('Invalid input.');
         promptUser();

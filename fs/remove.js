@@ -1,6 +1,7 @@
 import { access, unlink } from 'node:fs/promises';
 import { constants } from 'node:fs';
 import path from 'path';
+import { promptUser } from '../index.js';
 
 const remove = async (pathToFile) => {
     try {
@@ -10,14 +11,10 @@ const remove = async (pathToFile) => {
             await unlink(fileToRemovePath);
             console.log(`File "${pathToFile}" was removed.`);
         } catch (err) {
-            if (err.code === 'ENOENT') {
-                throw new Error('FS operation failed');
-            } else {
-                throw err;
-            }
+            console.error(`Operation failed. ${err.message}`);
         }
     } catch (err) {
-        throw new Error(err);
+        console.error(`Operation failed. ${err.message}`);
     }
 };
 
