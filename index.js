@@ -15,11 +15,15 @@ import decompress from './zip/decompress.js';
 
 const username = welcome();
 
-process.chdir(os.homedir());
-console.log(`You are currently in ${process.cwd()}`);
+const currentDirectory = () => {
+    console.log(`You are currently in ${process.cwd()}`);
+}
 const promptUser = () => {
+    currentDirectory();
     process.stdout.write('> '); 
 };
+
+process.chdir(os.homedir());
 
 process.stdin.resume();
 promptUser();
@@ -35,38 +39,46 @@ process.stdin.on('data', (data) => {
         changeDirectory('..');
         promptUser();
     } else if (input.startsWith('cd ')) {
-        changeDirectory(input.slice(3).trim());
-        promptUser();
+        changeDirectory(input.slice(3).trim()).finally(() => promptUser());
     } else if (input === 'ls') {
-        listFilesFolders().then(() => promptUser());
+        listFilesFolders().finally(() => promptUser());
     } else if (input.startsWith('cat ')) {
-        read(input.slice(4).trim()).then(() => promptUser());
+        read(input.slice(4).trim()).finally(() => promptUser());
     } else if (input.startsWith('add ')) {
-        create(process.cwd(), input.slice(4).trim()).then(() => promptUser());
+        create(process.cwd(), input.slice(4).trim()).finally(() => promptUser());
     } else if (input.startsWith('rn ')){
         const [oldFilename, newFilename] = input.slice(3).trim().split(' ');
-        rename(oldFilename, newFilename).then(() => promptUser());
+        rename(oldFilename, newFilename).finally(() => promptUser());
     } else if (input.startsWith('cp ')) {
         const [source, destination] = input.slice(3).trim().split(' ');
-        copy(source, destination).then(() => promptUser());
+        copy(source, destination).finally(() => promptUser());
     } else if (input.startsWith('rm ')){
-        remove(input.slice(3).trim()).then(() => promptUser());
+        remove(input.slice(3).trim()).finally(() => promptUser());
     } else if (input.startsWith('mv ')){
         const [source, destination] = input.slice(3).trim().split(' ');
-        move(source, destination).then(() => promptUser())
+        move(source, destination).finally(() => promptUser())
     } else if (input.startsWith('os ')) {
         const flag = input.slice(3).trim();
-        if(flag === '--EOL') {
-            getEOL();
-        } else if (flag === '--cpus') {
-            printCPUsInfo();
-        } else if (flag === '--homedir') {
-            console.log(`Home directory: ${os.homedir()}`);
-        } else if (flag === '--username') {
-            console.log(`Username: ${os.userInfo().username}`);
-        } else if (flag === '--architecture') {
-            console.log(`CPU architecture: ${os.arch()}`);
+        switch (flag) {
+            case '--EOL':
+                getEOL();
+                break;
+            case '--cpus':
+                printCPUsInfo();
+                break;
+            case '--homedir':
+                console.log(`Home directory: ${os.homedir()}`);
+                break;
+            case '--username':
+                console.log(`Username: ${os.userInfo().username}`);
+                break;
+            case '--architecture':
+                console.log(`CPU architecture: ${os.arch()}`);
+                break;
+            default:
+                console.log('Invalid input');
         }
+    promptUser();
     } else if (input.startsWith('hash ')) {
         calcHash(input.slice(4).trim()).then(() => promptUser());
     } else if (input.startsWith('compress ')) {
@@ -76,7 +88,7 @@ process.stdin.on('data', (data) => {
         const [source, destination] = input.slice(11).trim().split(' ');
         decompress(source, destination).then(() => promptUser());
     } else {
-        console.log('Wrong command. Please try again.');
+        console.log('Invalid input.');
         promptUser();
     }
 });
